@@ -7,6 +7,14 @@
         <form method="post">
             <div id="submit-form">
                 <input name="symbol" placeholder="Enter Symbol">
+                <select name="periodType">
+                    <option value="day">Day</option>
+                    <option value="month">Month</option>
+                    <option value="year">Year</option>
+                    <option value="ytd">YTD</option>
+                  </select>
+                <input name="period" placeholder="Enter period">
+                <br>
                 <input type="submit" value="GetPriceData">
             </div>
         </form>
@@ -14,11 +22,12 @@
         <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <!-- <script type="text/javascript" src="static/index.js"></script> -->
         <script>
-            var graphData = {{ data|tojson|safe }}
+            var symbol = {{ data.symbol|tojson|safe }}
+            var graphData = {{ data.chartData|tojson|safe }}
 
             var margin = {top: 30, right: 50, bottom: 30, left: 50};
-            var svgWidth = 800;
-            var svgHeight = 300;
+            var svgWidth = 1000;
+            var svgHeight = 400;
             var graphWidth = svgWidth - margin.left - margin.right
             var graphHeight = svgHeight - margin.bottom - margin.top;
             
@@ -69,6 +78,13 @@
                 svg.append("g")
                     .attr("class", "y axis")
                     .call(yAxis);
+
+                svg.append("text")
+                    .attr("transform", "translate("+(graphWidth+5)+","+y(graphData[graphData.length-1].close)+")")
+                    .attr("dy", ".5em")
+                    .attr("text-anchor", "start")
+                    .style("fill", "Black")
+                    .text(symbol);
                 };
             // call function
             drawGraph(graphData);
